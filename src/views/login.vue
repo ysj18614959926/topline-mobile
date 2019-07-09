@@ -11,12 +11,14 @@
             required
             clearable
             label="手机号"
+            :error-message="errors.mobile"
             placeholder="请输入手机号"
           />
           <van-field
             v-model="user.code"
             label="验证码"
             placeholder="请输入验证码"
+            :error-message="errors.code"
             required
           />
         </van-cell-group>
@@ -32,14 +34,31 @@ export default {
       user: {
         mobile: '18614959926',
         code: '123456'
+      },
+      errors: {
+        mobile: '',
+        code: ''
       }
     }
   },
   methods: {
     async handelLogin () {
       try {
+        if (this.user.mobile.length > 0) {
+          this.errors.mobile = ''
+        } else {
+          this.errors.mobile = '必须输入手机号'
+          return
+        }
+        if (this.user.code.length > 0) {
+          this.errors.code = ''
+        } else {
+          this.errors.code = '必须输入验证码'
+          return
+        }
         const res = await userLogin(this.user)
         this.$store.commit('addUser', res.data)
+        this.$router.push('/')
       } catch (err) {
         console.log(err)
       }
