@@ -25,6 +25,7 @@
   </div>
 </template>
 <script>
+import { userLogin } from '@/api/user'
 export default {
   data () {
     return {
@@ -35,8 +36,13 @@ export default {
     }
   },
   methods: {
-    handelLogin () {
-      console.log('handelLogin click')
+    async handelLogin () {
+      try {
+        const res = await userLogin(this.user)
+        console.log(res)
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }
