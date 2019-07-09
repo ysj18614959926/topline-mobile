@@ -39,7 +39,7 @@ export default {
     async handelLogin () {
       try {
         const res = await userLogin(this.user)
-        console.log(res)
+        this.$store.commit('addUser', res.data)
       } catch (err) {
         console.log(err)
       }
