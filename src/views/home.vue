@@ -50,6 +50,12 @@ export default {
       try {
         const data = await getChannels()
         this.channels = data.data.channels
+        this.channels.forEach(item => {
+          item.upLoading = false
+          item.finished = false
+          item.downLoading = false
+          item.articles = []
+        })
         console.log(data.data.channels)
       } catch (err) {
         console.log(err)
