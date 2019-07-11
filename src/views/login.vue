@@ -33,7 +33,7 @@ export default {
     return {
       user: {
         mobile: '18614959926',
-        code: '123456'
+        code: '246810'
       },
       errors: {
         mobile: '',

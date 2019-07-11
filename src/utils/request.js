@@ -1,6 +1,7 @@
 import axios from 'axios'
 export const request = axios.create({
-  baseURL: 'http://toutiao.course.itcast.cn/'
+  // baseURL: 'http://toutiao.course.itcast.cn/'
+  baseURL: 'http://ttapi.research.itcast.cn/'
 })
 request.interceptors.request.use(function (config) {
   return config
