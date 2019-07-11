@@ -4,7 +4,7 @@
         title="首页" fixed
     />
     <van-tabs v-model="active" class="channelBar">
-        <van-tab title="标签 1">
+        <van-tab :title="item.name" v-for='item in channels' :key='item.id'>
             <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
                 <van-list
                 v-model="loading"
@@ -20,9 +20,6 @@
                 </van-list>
             </van-pull-refresh>
         </van-tab>
-        <van-tab title="标签 2">内容 2</van-tab>
-        <van-tab title="标签 3">内容 3</van-tab>
-        <van-tab title="标签 4">内容 4</van-tab>
     </van-tabs>
     <van-tabbar v-model="active" fixed>
         <van-tabbar-item icon="home-o">首页</van-tabbar-item>
@@ -33,9 +30,11 @@
   </div>
 </template>
 <script>
+import { getChannels } from '@/api/channels'
 export default {
   data () {
     return {
+      channels: [],
       active: 0,
       loading: false,
       finished: false,
@@ -43,7 +42,19 @@ export default {
       isLoading: false
     }
   },
+  created () {
+    this.handelGetChannels()
+  },
   methods: {
+    async handelGetChannels () {
+      try {
+        const data = await getChannels()
+        this.channels = data.data.channels
+        console.log(data.data.channels)
+      } catch (err) {
+        console.log(err)
+      }
+    },
     onLoad () {
       setTimeout(() => {
         for (let i = 0; i < 10; i++) {
