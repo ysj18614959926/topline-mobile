@@ -5,20 +5,18 @@
     />
     <van-tabs v-model="active" class="channelBar">
         <van-tab :title="item.name" v-for='item in channels' :key='item.id'>
-            <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
                 <van-list
-                v-model="loading"
-                :finished="finished"
+                v-model="item.upLoading"
+                :finished="item.finished"
                 finished-text="没有更多了"
                 @load="onLoad"
                 >
                 <van-cell
-                    v-for="item in list"
-                    :key="item"
-                    :title="item"
+                    v-for="article in item.articles"
+                    :key="article.art_id"
+                    :title="article.title"
                 />
                 </van-list>
-            </van-pull-refresh>
         </van-tab>
     </van-tabs>
     <van-tabbar v-model="active" fixed>
@@ -31,6 +29,7 @@
 </template>
 <script>
 import { getChannels } from '@/api/channels'
+import { getArticles } from '@/api/articles'
 export default {
   data () {
     return {
@@ -45,38 +44,48 @@ export default {
   created () {
     this.handelGetChannels()
   },
+  computed: {
+    activeChannel () {
+      return this.channels[this.active]
+    }
+  },
   methods: {
     async handelGetChannels () {
       try {
         const data = await getChannels()
-        this.channels = data.data.channels
-        this.channels.forEach(item => {
+        data.data.channels.forEach(item => {
           item.upLoading = false
           item.finished = false
           item.downLoading = false
           item.articles = []
+          item.timestamp = Date.now()
         })
-        console.log(data.data.channels)
+        this.channels = data.data.channels
       } catch (err) {
         console.log(err)
       }
     },
-    onLoad () {
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        this.loading = false
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 1000)
+    async handelGetArticles () {
+      const { id, timestamp } = this.activeChannel
+      const data = await getArticles({
+        channelId: id,
+        timestamp
+      })
+      return data
     },
-    onRefresh () {
-      setTimeout(() => {
-        this.isLoading = false
-        this.$toast('刷新成功')
-      }, 1000)
+    async onLoad () {
+      let data = []
+      data = await this.handelGetArticles()
+      if (data.data.pre_timestamp && data.data.results.length === 0) {
+        this.activeChannel.timestamp = data.data.pre_timestamp
+        data = await this.handelGetArticles()
+      }
+      this.activeChannel.timestamp = data.data.pre_timestamp
+      this.activeChannel.articles.push(...data.data.results)
+      this.activeChannel.upLoading = false
+      console.log(this.activeChannel.articles)
+    },
+    async onRefresh () {
     }
   }
 }
