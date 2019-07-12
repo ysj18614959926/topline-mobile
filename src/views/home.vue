@@ -5,18 +5,20 @@
     />
     <van-tabs v-model="active" class="channelBar">
         <van-tab :title="item.name" v-for='item in channels' :key='item.id'>
-                <van-list
-                v-model="item.upLoading"
-                :finished="item.finished"
-                finished-text="没有更多了"
-                @load="onLoad"
-                >
-                <van-cell
-                    v-for="article in item.articles"
-                    :key="article.art_id"
-                    :title="article.title"
-                />
-                </van-list>
+            <van-pull-refresh v-model="item.downLoading" @refresh="onRefresh" :success-text='item.successText'>
+              <van-list
+              v-model="item.upLoading"
+              :finished="item.finished"
+              finished-text="没有更多了"
+              @load="onLoad"
+              >
+              <van-cell
+                  v-for="article in item.articles"
+                  :key="article.art_id"
+                  :title="article.title"
+              />
+              </van-list>
+              </van-pull-refresh>
         </van-tab>
     </van-tabs>
     <van-tabbar v-model="active" fixed>
@@ -59,6 +61,7 @@ export default {
           item.downLoading = false
           item.articles = []
           item.timestamp = Date.now()
+          item.successText = ''
         })
         this.channels = data.data.channels
       } catch (err) {
@@ -83,9 +86,20 @@ export default {
       this.activeChannel.timestamp = data.data.pre_timestamp
       this.activeChannel.articles.push(...data.data.results)
       this.activeChannel.upLoading = false
-      console.log(this.activeChannel.articles)
     },
     async onRefresh () {
+      const timestamp = this.activeChannel.timestamp
+      this.activeChannel.timestamp = Date.now()
+      const data = await this.handelGetArticles()
+      if (data.data.results.length === 0) {
+        this.activeChannel.timestamp = timestamp
+        this.onLoad()
+        this.activeChannel.successText = '已经是最新内容'
+        this.activeChannel.downLoading = false
+        return
+      }
+      this.activeChannel.downLoading = false
+      this.activeChannel.successText = '刷新成功'
     }
   }
 }
