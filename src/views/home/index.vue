@@ -4,6 +4,7 @@
         title="首页" fixed
     />
     <van-tabs v-model="active" class="channelBar">
+        <div slot='nav-right' @click='isShowDialog = true'><van-icon name="wap-nav" class="wap-nav"/></div>
         <van-tab :title="item.name" v-for='item in channels' :key='item.id'>
             <van-pull-refresh v-model="item.downLoading" @refresh="onRefresh" :success-text='item.successText'>
               <van-list
@@ -27,20 +28,23 @@
         <van-tabbar-item icon="video-o">视频</van-tabbar-item>
         <van-tabbar-item icon="user-circle-o">我的</van-tabbar-item>
     </van-tabbar>
+    <all-channels v-model='isShowDialog'></all-channels>
   </div>
 </template>
 <script>
 import { getChannels } from '@/api/channels'
 import { getArticles } from '@/api/articles'
+import AllChannels from '@/views/home/components/allChannels'
 export default {
+  name: 'homeIndex',
+  components: {
+    AllChannels
+  },
   data () {
     return {
       channels: [],
       active: 0,
-      loading: false,
-      finished: false,
-      list: [],
-      isLoading: false
+      isShowDialog: false
     }
   },
   created () {
@@ -121,5 +125,14 @@ export default {
 }
 .channelBar /deep/ .van-tabs_content {
   margin-top: 92px;
+}
+.wap-nav {
+  height: 80px;
+  position: fixed;
+  right: 0;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  opacity: .8;
 }
 </style>
