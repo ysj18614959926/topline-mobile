@@ -20,14 +20,17 @@
     <div class="interval">频道推荐<span>点击添加频道</span></div>
     <van-grid>
         <van-grid-item
-            v-for="value in 4"
-            :key="value"
-            text="文字"
-        />
+            v-for="item in recommendChannels"
+            :key="item.id"
+            @click='handelAddChannel(item)'
+        >
+            <span>{{item.name}}</span>
+        </van-grid-item>
     </van-grid>
     </van-popup>
 </template>
 <script>
+import { getAllChannels } from '@/api/channels'
 export default {
   props: {
     value: {
@@ -45,20 +48,52 @@ export default {
   },
   data () {
     return {
-      isEdit: false
+      isEdit: false,
+      allChannels: []
+    }
+  },
+  created () {
+    this.handelGetAllChannels()
+  },
+  computed: {
+    recommendChannels () {
+      const userChannel = this.userChannel.map(item => item.id)
+      return this.allChannels.filter(item => !userChannel.includes(item.id))
     }
   },
   methods: {
-    handel (e) {
-      console.log(e)
+    async handelGetAllChannels () {
+      const data = await getAllChannels()
+      data.data.channels.forEach(item => {
+        item.upLoading = false
+        item.finished = false
+        item.downLoading = false
+        item.articles = []
+        item.timestamp = Date.now()
+        item.successText = ''
+      })
+      this.allChannels = data.data.channels
+    },
+    handelAddChannel (item) {
+      const channel = this.userChannel.slice(0)
+      const { user } = this.$store.state
+      channel.push(item)
+      if (user) {
+        this.$emit('update:user-channel', channel)
+        return
+      }
+      window.localStorage.setItem('channels', channel)
     }
   }
 }
 </script>
 <style scoped>
 div {
-    font-size: 12px;
+    font-size: 14px;
     /* margin-bottom: 30px; */
+}
+span {
+    font-size: 12px
 }
 .lightRed {
   color: red

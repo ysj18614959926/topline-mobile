@@ -5,3 +5,9 @@ export const getChannels = () => {
     methods: 'GET'
   })
 }
+export const getAllChannels = () => {
+  return request({
+    url: '/app/v1_0/channels',
+    methods: 'GET'
+  })
+}
