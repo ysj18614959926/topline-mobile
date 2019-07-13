@@ -28,7 +28,7 @@
         <van-tabbar-item icon="video-o">视频</van-tabbar-item>
         <van-tabbar-item icon="user-circle-o">我的</van-tabbar-item>
     </van-tabbar>
-    <all-channels v-model='isShowDialog'></all-channels>
+    <all-channels v-model='isShowDialog' :user-channel='channels'></all-channels>
   </div>
 </template>
 <script>
