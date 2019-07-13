@@ -5,16 +5,19 @@
     position="bottom"
     :style="{ height: '90%' }"
     >
-    <div>我的频道<span>点击进入频道</span></div>
+    <div class="interval">我的频道<span>点击进入频道</span>
+        <van-button plain type="danger" size='mini' style="float: right" @click='isEdit = !isEdit'>{{isEdit ? '完成' : '编辑'}}</van-button>
+    </div>
     <van-grid>
         <van-grid-item
             v-for="(item,index) in userChannel"
             :key="item.id"
         >
-            <span :class='{lightRed: index === activeIndex}'>{{item.name}}</span>
+            <span :class='{lightRed: index === activeIndex && !isEdit}'>{{item.name}}</span>
+            <van-icon name="close" v-show='isEdit' class="close"/>
         </van-grid-item>
     </van-grid>
-    <div>频道推荐<span>点击添加频道</span></div>
+    <div class="interval">频道推荐<span>点击添加频道</span></div>
     <van-grid>
         <van-grid-item
             v-for="value in 4"
@@ -42,7 +45,7 @@ export default {
   },
   data () {
     return {
-      show: true
+      isEdit: false
     }
   },
   methods: {
@@ -59,5 +62,14 @@ div {
 }
 .lightRed {
   color: red
+}
+.interval {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 </style>
