@@ -8,10 +8,10 @@
     <div>我的频道<span>点击进入频道</span></div>
     <van-grid>
         <van-grid-item
-            v-for="item in userChannel"
+            v-for="(item,index) in userChannel"
             :key="item.id"
         >
-            <span>{{item.name}}</span>
+            <span :class='{lightRed: index === activeIndex}'>{{item.name}}</span>
         </van-grid-item>
     </van-grid>
     <div>频道推荐<span>点击添加频道</span></div>
@@ -34,6 +34,10 @@ export default {
     userChannel: {
       type: Array,
       default: () => [] // 必须死一个函数
+    },
+    activeIndex: {
+      type: Number,
+      default: 0
     }
   },
   data () {
@@ -51,6 +55,9 @@ export default {
 <style scoped>
 div {
     font-size: 12px;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
+}
+.lightRed {
+  color: red
 }
 </style>
