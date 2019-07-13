@@ -8,18 +8,20 @@
       <van-cell-group>
           <van-field
             v-model="user.mobile"
-            required
+            v-validate="'required'"
+            name="phone"
             clearable
             label="手机号"
-            :error-message="errors.mobile"
+            :error-message="errors.first('phone')"
             placeholder="请输入手机号"
           />
           <van-field
             v-model="user.code"
             label="验证码"
             placeholder="请输入验证码"
-            :error-message="errors.code"
-            required
+            :error-message="errors.first('code')"
+            v-validate="'required'"
+            name="code"
           />
         </van-cell-group>
         <van-button type="info" @click.prevent='handelLogin'>登录</van-button>
@@ -34,26 +36,14 @@ export default {
       user: {
         mobile: '18614959926',
         code: '246810'
-      },
-      errors: {
-        mobile: '',
-        code: ''
       }
     }
   },
   methods: {
     async handelLogin () {
+      const valid = await this.$validator.validate()
       try {
-        if (this.user.mobile.length > 0) {
-          this.errors.mobile = ''
-        } else {
-          this.errors.mobile = '必须输入手机号'
-          return
-        }
-        if (this.user.code.length > 0) {
-          this.errors.code = ''
-        } else {
-          this.errors.code = '必须输入验证码'
+        if (!valid) {
           return
         }
         const res = await userLogin(this.user)

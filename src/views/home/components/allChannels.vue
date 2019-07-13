@@ -21,7 +21,7 @@
     <div class="interval">频道推荐<span>点击添加频道</span></div>
     <van-grid>
         <van-grid-item
-            v-for="item in recommendChannels"
+            v-for="(item, index) in recommendChannels"
             :key="item.id"
             @click='handelAddChannel(item, index)'
         >
