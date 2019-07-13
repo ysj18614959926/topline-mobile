@@ -51,6 +51,13 @@ export default {
       return this.channels[this.active]
     }
   },
+  watch: {
+    // 判断用户是否改变，是否重新加载
+    '$store.state.user' () {
+      this.handelGetChannels()
+      this.onLoad()
+    }
+  },
   methods: {
     async handelGetChannels () {
       try {
