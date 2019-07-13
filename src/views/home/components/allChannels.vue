@@ -95,7 +95,10 @@ export default {
           return
         }
         window.localStorage.setItem('channels', JSON.stringify(channel))
+        return
       }
+      this.$emit('update:activeIndex', index)
+      this.$emit('input', false)
     }
   }
 }
