@@ -112,8 +112,14 @@ export default {
 }
 </script>
 <style lang='less' scoped>
-.channelBar {
-  margin-top: 46px;
-  margin-bottom: 50px;
+.channelBar{
+  margin-bottom: 100px;
+}
+.channelBar /deep/ .van-tabs__wrap {
+  position: fixed;
+  top: 92px
+}
+.channelBar /deep/ .van-tabs_content {
+  margin-top: 92px;
 }
 </style>
