@@ -6,7 +6,7 @@ export const request = axios.create({
 })
 request.interceptors.request.use(function (config) {
   const { user } = store.state
-  if (user && user.token !== undefined) {
+  if (user) {
     config.headers.Authorization = `Bearer ${user.token}`
   }
   return config

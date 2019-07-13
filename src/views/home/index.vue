@@ -53,8 +53,8 @@ export default {
   },
   watch: {
     // 判断用户是否改变，是否重新加载
-    '$store.state.user' () {
-      this.handelGetChannels()
+    async '$store.state.user' () {
+      await this.handelGetChannels()
       this.onLoad()
     }
   },
