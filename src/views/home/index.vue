@@ -65,8 +65,20 @@ export default {
   methods: {
     async handelGetChannels () {
       try {
-        const data = await getChannels()
-        data.data.channels.forEach(item => {
+        const { user } = this.$store.state
+        let data
+        if (user) {
+          data = (await getChannels()).data.channels
+        } else {
+          const local = JSON.parse(window.localStorage.getItem('channels'))
+          if (local) {
+            data = local
+            console.log(data)
+          } else {
+            data = (await getChannels()).data.channels
+          }
+        }
+        data.forEach(item => {
           item.upLoading = false
           item.finished = false
           item.downLoading = false
@@ -74,7 +86,7 @@ export default {
           item.timestamp = Date.now()
           item.successText = ''
         })
-        this.channels = data.data.channels
+        this.channels = data
       } catch (err) {
         console.log(err)
       }

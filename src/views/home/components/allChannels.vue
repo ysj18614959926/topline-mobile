@@ -12,6 +12,7 @@
         <van-grid-item
             v-for="(item,index) in userChannel"
             :key="item.id"
+            @click='handelRemoveChannel(item, index)'
         >
             <span :class='{lightRed: index === activeIndex && !isEdit}'>{{item.name}}</span>
             <van-icon name="close" v-show='isEdit' class="close"/>
@@ -22,7 +23,7 @@
         <van-grid-item
             v-for="item in recommendChannels"
             :key="item.id"
-            @click='handelAddChannel(item)'
+            @click='handelAddChannel(item, index)'
         >
             <span>{{item.name}}</span>
         </van-grid-item>
@@ -78,11 +79,23 @@ export default {
       const channel = this.userChannel.slice(0)
       const { user } = this.$store.state
       channel.push(item)
+      this.$emit('update:user-channel', channel)
       if (user) {
-        this.$emit('update:user-channel', channel)
         return
       }
-      window.localStorage.setItem('channels', channel)
+      window.localStorage.setItem('channels', JSON.stringify(channel))
+    },
+    handelRemoveChannel (item, index) {
+      const { user } = this.$store.state
+      if (this.isEdit) {
+        const channel = this.userChannel.slice(0)
+        channel.splice(index, 1)
+        this.$emit('update:user-channel', channel)
+        if (user) {
+          return
+        }
+        window.localStorage.setItem('channels', JSON.stringify(channel))
+      }
     }
   }
 }
