@@ -16,8 +16,17 @@
               <van-cell
                   v-for="article in item.articles"
                   :key="article.art_id"
-                  :title="article.title"
-              />
+              >
+                <template>
+                    <p>{{article.title}}</p>
+                    <img v-for='imgList in article.cover.images' :src="imgList" :key='imgList'/>
+                    <p>
+                      <span>{{article.aut_name}}</span>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span>{{article.pubdate | relativeTime}}</span>
+                    </p>
+                </template>
+              </van-cell>
               </van-list>
               </van-pull-refresh>
         </van-tab>
@@ -68,13 +77,11 @@ export default {
         const { user } = this.$store.state
         let data
         if (user) {
-          console.log('有user，获取在线channel')
           data = (await getChannels()).data.channels
         } else {
           const local = JSON.parse(window.localStorage.getItem('channels'))
           if (local) {
             data = local
-            console.log(data)
           } else {
             data = (await getChannels()).data.channels
           }
@@ -136,7 +143,7 @@ export default {
   position: fixed;
   top: 92px
 }
-.channelBar /deep/ .van-tabs_content {
+.channelBar /deep/ .van-tabs__content {
   margin-top: 92px;
 }
 .wap-nav {
@@ -147,5 +154,9 @@ export default {
   align-items: center;
   background-color: #fff;
   opacity: .8;
+}
+img {
+  width: 200px;
+  height: 150px;
 }
 </style>
