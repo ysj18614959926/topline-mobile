@@ -24,6 +24,7 @@
                       <span>{{article.aut_name}}</span>
                       &nbsp;&nbsp;&nbsp;&nbsp;
                       <span>{{article.pubdate | relativeTime}}</span>
+                      <van-icon name="close" @click='handelShowDialog(article)' style="float:right"/>
                     </p>
                 </template>
               </van-cell>
@@ -38,22 +39,26 @@
         <van-tabbar-item icon="user-circle-o">我的</van-tabbar-item>
     </van-tabbar>
     <all-channels v-model='isShowDialog' :user-channel.sync='channels' :activeIndex.sync='active'></all-channels>
+    <user-report v-model='reportDialogIsShow'></user-report>
   </div>
 </template>
 <script>
 import { getChannels } from '@/api/channels'
 import { getArticles } from '@/api/articles'
 import AllChannels from '@/views/home/components/allChannels'
+import UserReport from '@/views/home/components/report'
 export default {
   name: 'homeIndex',
   components: {
-    AllChannels
+    AllChannels,
+    UserReport
   },
   data () {
     return {
       channels: [],
       active: 0,
-      isShowDialog: false
+      isShowDialog: false,
+      reportDialogIsShow: false
     }
   },
   created () {
@@ -131,6 +136,9 @@ export default {
       }
       this.activeChannel.downLoading = false
       this.activeChannel.successText = '刷新成功'
+    },
+    handelShowDialog (articles) {
+      this.reportDialogIsShow = true
     }
   }
 }
