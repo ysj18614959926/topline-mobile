@@ -68,6 +68,7 @@ export default {
         const { user } = this.$store.state
         let data
         if (user) {
+          console.log('有user，获取在线channel')
           data = (await getChannels()).data.channels
         } else {
           const local = JSON.parse(window.localStorage.getItem('channels'))

@@ -31,7 +31,7 @@
     </van-popup>
 </template>
 <script>
-import { getAllChannels } from '@/api/channels'
+import { getAllChannels, addChannels, deleteChannel } from '@/api/channels'
 export default {
   props: {
     value: {
@@ -75,24 +75,31 @@ export default {
       })
       this.allChannels = data.data.channels
     },
-    handelAddChannel (item) {
+    async handelAddChannel (item) {
       const channel = this.userChannel.slice(0)
       const { user } = this.$store.state
       channel.push(item)
       this.$emit('update:user-channel', channel)
       if (user) {
-        return
+        await addChannels(
+          [
+            {
+              id: item.id,
+              seq: channel.length - 1
+            }
+          ]
+        )
       }
       window.localStorage.setItem('channels', JSON.stringify(channel))
     },
-    handelRemoveChannel (item, index) {
+    async handelRemoveChannel (item, index) {
       const { user } = this.$store.state
       if (this.isEdit) {
         const channel = this.userChannel.slice(0)
         channel.splice(index, 1)
         this.$emit('update:user-channel', channel)
         if (user) {
-          return
+          await deleteChannel(item.id)
         }
         window.localStorage.setItem('channels', JSON.stringify(channel))
         return
@@ -106,7 +113,6 @@ export default {
 <style scoped>
 div {
     font-size: 14px;
-    /* margin-bottom: 30px; */
 }
 span {
     font-size: 12px
