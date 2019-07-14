@@ -6,6 +6,7 @@
     <van-tabs v-model="active" class="channelBar">
         <div slot='nav-right' @click='isShowDialog = true'><van-icon name="wap-nav" class="wap-nav"/></div>
         <van-tab :title="item.name" v-for='item in channels' :key='item.id'>
+            <user-report v-model='reportDialogIsShow' :user-articleid='artId' :article.sync='item.articles'></user-report>
             <van-pull-refresh v-model="item.downLoading" @refresh="onRefresh" :success-text='item.successText'>
               <van-list
               v-model="item.upLoading"
@@ -15,7 +16,7 @@
               >
               <van-cell
                   v-for="article in item.articles"
-                  :key="article.art_id"
+                  :key="article.art_id.toString()"
               >
                 <template>
                     <p>{{article.title}}</p>
@@ -39,7 +40,6 @@
         <van-tabbar-item icon="user-circle-o">我的</van-tabbar-item>
     </van-tabbar>
     <all-channels v-model='isShowDialog' :user-channel.sync='channels' :activeIndex.sync='active'></all-channels>
-    <user-report v-model='reportDialogIsShow'></user-report>
   </div>
 </template>
 <script>
@@ -58,7 +58,8 @@ export default {
       channels: [],
       active: 0,
       isShowDialog: false,
-      reportDialogIsShow: false
+      reportDialogIsShow: false,
+      artId: null
     }
   },
   created () {
@@ -138,6 +139,7 @@ export default {
       this.activeChannel.successText = '刷新成功'
     },
     handelShowDialog (articles) {
+      this.artId = articles.art_id
       this.reportDialogIsShow = true
     }
   }
