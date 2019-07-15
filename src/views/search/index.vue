@@ -8,6 +8,7 @@
 </template>
 <script>
 import { userSearch } from '@/api/user'
+import _ from 'lodash'
 export default {
   data () {
     return {
@@ -16,14 +17,14 @@ export default {
     }
   },
   watch: {
-    search: async function (newWorld) {
+    search: _.debounce(async function (newWorld) {
       if (this.search === '') {
         this.searchList = ''
         return
       }
       const data = await userSearch(newWorld)
       this.searchList = data.data.options
-    }
+    }, 800)
   }
 }
 </script>
