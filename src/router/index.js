@@ -18,7 +18,12 @@ export default new Router({
     {
       name: 'search',
       path: '/search',
-      component: () => import('@/views/search')
+      component: () => import('@/views/search/index.vue')
+    },
+    {
+      name: 'result',
+      path: '/result',
+      component: () => import('@/views/results/index.vue')
     }
   ]
 })

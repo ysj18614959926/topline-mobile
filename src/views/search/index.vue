@@ -1,9 +1,11 @@
 <template>
   <div>
-    <van-search placeholder="请输入搜索关键词" v-model="search" />
-    <van-cell-group>
-        <van-cell :title="item" v-for='item in searchList' :key='item'/>
-    </van-cell-group>
+    <form action="/">
+      <van-search placeholder="请输入搜索关键词" v-model="search" @search='handelSearch(search)' />
+      <van-cell-group>
+          <van-cell :title="item" v-for='item in searchList' :key='item'/>
+      </van-cell-group>
+    </form>
   </div>
 </template>
 <script>
@@ -25,6 +27,16 @@ export default {
       const data = await userSearch(newWorld)
       this.searchList = data.data.options
     }, 800)
+  },
+  methods: {
+    handelSearch (q) {
+      this.$router.push({
+        name: 'result',
+        params: {
+          q
+        }
+      })
+    }
   }
 }
 </script>
