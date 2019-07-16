@@ -33,6 +33,12 @@ export default {
       return this.$route.params.q
     }
   },
+  // activated () {
+  //   this.onLoad()
+  // },
+  deactivated () {
+    this.$destroy()
+  },
   async created () {
     this.onLoad()
   },
