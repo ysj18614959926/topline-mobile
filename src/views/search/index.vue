@@ -12,9 +12,22 @@
             slot="right-icon"
             name="delete"
             style="line-height: inherit;"
+            @click='isShow = true'
+         />
+         <div>
+           <span v-show='isShow' @click='historiesList = ""'>全部删除</span> &nbsp;&nbsp;&nbsp;
+           <span @click='isShow = false' v-show='isShow'>完成</span>
+         </div>
+        </van-cell>
+        <van-cell :title="item" v-for='(item, index) in historiesList' :key='item' >
+            <van-icon
+            slot="right-icon"
+            name="close"
+            style="line-height: inherit;"
+            v-show='isShow'
+            @click='handelDelete(index)'
          />
         </van-cell>
-        <van-cell :title="item" v-for='item in historiesList' :key='item' />
       </van-cell-group>
     </form>
   </div>
@@ -28,6 +41,7 @@ export default {
       search: '',
       searchList: null,
       historiesList: JSON.parse(window.localStorage.getItem('histories')),
+      // historiesList: [],
       isShow: false
     }
   },
@@ -39,21 +53,32 @@ export default {
       }
       const data = await userSearch(newWorld)
       this.searchList = data.data.options
-    }, 800)
+    }, 800),
+    historiesList: {
+      handler () {
+        window.localStorage.setItem('histories', JSON.stringify([...new Set(this.historiesList)]))
+      }
+    }
   },
   deactivated () {
     this.search = ''
   },
   methods: {
     handelSearch (q) {
+      if (!q.length) {
+        return
+      }
       this.historiesList.unshift(q)
-      window.localStorage.setItem('histories', JSON.stringify(this.historiesList))
+      // window.localStorage.setItem('histories', JSON.stringify([...new Set(this.historiesList)]))
       this.$router.push({
         name: 'result',
         params: {
           q
         }
       })
+    },
+    handelDelete (index) {
+      this.historiesList.splice(index, 1)
     }
   }
 }
